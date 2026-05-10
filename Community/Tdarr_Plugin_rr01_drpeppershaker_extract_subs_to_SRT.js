@@ -34,8 +34,10 @@ const details = () => ({
       inputUI: {
         type: 'text',
       },
-      tooltip: 'Comma separated ffprobe subtitle codec_name values to extract. '
-        + 'Default subrip keeps the previous behavior. Example: subrip,ass,ssa,text',
+      tooltip: 'Comma separated ffprobe subtitle codec_name values to extract as SRT. '
+        + 'Text-based codecs only. Default subrip keeps the previous behavior. '
+        + 'Example: subrip,ass,ssa,text,mov_text,webvtt. Bitmap codecs such as '
+        + 'hdmv_pgs_subtitle or dvd_subtitle are not supported.',
     },
   ],
 });
