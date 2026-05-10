@@ -11,7 +11,7 @@ const details = () => ({
       + 'other options.',
   // Created by drpeppershaker with help from reddit user /u/jakejones48, lots of
   // improvements made after looking at "Tdarr_Plugin_078d" by HaveAGitGat.
-  Version: '1.05',
+  Version: '1.06',
   Tags: 'pre-processing,subtitle only,ffmpeg,configurable',
   Inputs: [
     {
@@ -26,6 +26,16 @@ const details = () => ({
         ],
       },
       tooltip: 'Do you want to remove subtitles after they are  extracted?',
+    },
+    {
+      name: 'subtitle_codecs',
+      type: 'string',
+      defaultValue: 'subrip',
+      inputUI: {
+        type: 'text',
+      },
+      tooltip: 'Comma separated ffprobe subtitle codec_name values to extract. '
+        + 'Default subrip keeps the previous behavior. Example: subrip,ass,ssa,text',
     },
   ],
 });
@@ -52,7 +62,12 @@ const plugin = (file, librarySettings, inputs, otherArguments) => {
     return response;
   }
 
-  const subsArr = file.ffProbeData.streams.filter((row) => (['subrip', 'ass', 'ssa', 'text'].includes(row.codec_name)));
+  const subtitleCodecs = String(inputs.subtitle_codecs).toLowerCase().split(',')
+    .map((codec) => codec.trim())
+    .filter((codec) => codec !== '');
+  const subsArr = file.ffProbeData.streams.filter((row) => (
+    subtitleCodecs.includes(String(row.codec_name).toLowerCase())
+  ));
 
   if (subsArr.length === 0) {
     response.infoLog += 'No subs in file to extract!\n';
